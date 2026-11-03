@@ -1,0 +1,59 @@
+{
+  "outcome": "all-cause mortality",
+  "years_rule": "years ~= (8 / ln 2) * ln(HR_now / HR_target); adult mortality doubles about every 8 years (Gompertz)",
+  "factors": {
+    "steps": {
+      "unit": "steps/day",
+      "model": "points", "range": [0, 40000],
+      "points": [[3553, 1.0], [5801, 0.60], [7842, 0.55], [10901, 0.47]],
+      "ci95": {"5801": [0.51, 0.71], "7842": [0.49, 0.62], "10901": [0.39, 0.57]},
+      "note": "Quartile medians vs the lowest quartile; log-interpolated between medians, flat outside. Plateau age-dependent (lower for 60+).",
+      "source": {"cite": "Paluch AE et al. Daily steps and all-cause mortality: a meta-analysis of 15 international cohorts. Lancet Public Health 2022;7(3):e219-e228",
+                 "doi": "10.1016/S2468-2667(21)00302-9", "design": "meta-analysis of 15 prospective cohorts, device-measured steps"}
+    },
+    "fitness": {
+      "unit": "METs (change)",
+      "model": "per_unit_change", "range": [-5, 5],
+      "hr_per_unit": 0.87, "per": 1, "ci95": [0.84, 0.90],
+      "note": "Per 1 MET higher maximal aerobic capacity (about 1 km/h faster running). Input is the change, not the level.",
+      "source": {"cite": "Kodama S et al. Cardiorespiratory fitness as a quantitative predictor of all-cause mortality and cardiovascular events in healthy men and women: a meta-analysis. JAMA 2009;301(19):2024-2035",
+                 "doi": "10.1001/jama.2009.681", "design": "meta-analysis of 33 studies, ~103,000 participants"}
+    },
+    "fruitveg": {
+      "unit": "g/day fruit + vegetables",
+      "model": "per_unit",
+      "hr_per_unit": 0.90, "per": 200, "ci95": [0.87, 0.93], "max": 800, "range": [0, 2000],
+      "note": "Benefit observed up to 800 g/day; strongest up to ~400 g/day, slight further reduction beyond.",
+      "source": {"cite": "Aune D et al. Fruit and vegetable intake and the risk of cardiovascular disease, total cancer and all-cause mortality. Int J Epidemiol 2017;46(3):1029-1056",
+                 "doi": "10.1093/ije/dyw319", "design": "systematic review and dose-response meta-analysis, 95 studies (15 for all-cause, combined fruit+veg)"}
+    },
+    "nuts": {
+      "unit": "g/day",
+      "model": "per_unit",
+      "hr_per_unit": 0.78, "per": 28, "ci95": [0.72, 0.84], "max": 28, "range": [0, 200],
+      "note": "Per 28 g/day; not extrapolated beyond 28 g. Heterogeneity I2 = 66%.",
+      "source": {"cite": "Aune D et al. Nut consumption and risk of cardiovascular disease, total cancer, all-cause and cause-specific mortality. BMC Med 2016;14:207",
+                 "doi": "10.1186/s12916-016-0730-3", "design": "systematic review and dose-response meta-analysis, 15 studies for all-cause"}
+    },
+    "bmi": {
+      "unit": "kg/m2",
+      "model": "per_unit",
+      "hr_per_unit": 1.31, "per": 5, "ci95": [1.29, 1.33], "min": 25, "range": [22.5, 60],
+      "note": "Per 5 units above 25, approximately log-linear; reference BMI 22.5-25. 22.5-25 treated as reference; below 22.5 risk rises again and is not modelled (rejected).",
+      "source": {"cite": "Global BMI Mortality Collaboration. Body-mass index and all-cause mortality: individual-participant-data meta-analysis of 239 prospective studies in four continents. Lancet 2016;388:776-786",
+                 "doi": "10.1016/S0140-6736(16)30175-1", "design": "individual-participant meta-analysis, 239 cohorts, 10.6 million people"}
+    },
+    "sleep": {
+      "unit": "hours/night",
+      "model": "bands",
+      "range": [3, 8.5],
+      "bands": [[null, 6, 1.12]],
+      "long_sleep_not_modelled": {"band": ">= 9 h", "hr": 1.30, "ci95": [1.22, 1.38]},
+      "ci95": {"short": [1.06, 1.18]},
+      "note": "Short sleep modelled as <= 6 h (an approximation: the pooled studies used cut-offs from <= 5 to < 7 h), otherwise reference (HR 1). Long sleep (>= 9 h, HR 1.30) is mainly a marker of ill health, so it is recorded but not used: inputs above 8.5 h are rejected (long-sleep cut-offs in the pooled studies started at > 8 h).",
+      "source": {"cite": "Cappuccio FP et al. Sleep duration and all-cause mortality: a systematic review and meta-analysis of prospective studies. Sleep 2010;33(5):585-592",
+                 "doi": "10.1093/sleep/33.5.585", "design": "meta-analysis of 16 studies (27 cohorts), 1.38 million participants"}
+    }
+  },
+  "verified": "2026-11-02: HRs and CIs checked against abstracts/full texts via web search; DOIs resolved via Crossref"
+}
